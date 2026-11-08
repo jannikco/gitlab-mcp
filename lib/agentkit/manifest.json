@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "product": "pipmcp",
+  "credential": "PIPMCP_API_KEY",
+  "skills": [
+    {
+      "name": "pipmcp-gitlab",
+      "description": "Connect AI agents to GitLab using one PipMCP API key and actual hosted tool discovery."
+    }
+  ],
+  "files": {
+    "skills/pipmcp-gitlab/SKILL.md": "165e7cdc1a71024a8dd1284a63f4b80bf352793a9af45727a941faffbadccaef"
+  }
+}
