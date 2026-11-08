@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "status": "ready",
+  "verification": "mock-only",
+  "releaseEligible": true,
+  "maintainer": "jannikco",
+  "license": "MIT",
+  "sourceRevision": "5fc52efaac2375b2cb335583340344310ff856b79b2c0b2f9c0e98bf86f4c9e6",
+  "evidence": [
+    "Source-backed provider setup metadata",
+    "Offline configuration and MCP protocol tests"
+  ],
+  "provenance": [
+    "https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/api/openapi/openapi_v2.yaml"
+  ],
+  "id": "gitlab-mcp",
+  "kind": "mcp-setup",
+  "product": "pipmcp",
+  "title": "GitLab MCP setup and connection checker",
+  "description": "Generate GitLab MCP client configuration, inspect available tools and validate hosted endpoint access through PipMCP.",
+  "operationIds": [],
+  "appSlug": "gitlab",
+  "appName": "GitLab",
+  "providerDocs": "https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/api/openapi/openapi_v2.yaml",
+  "providerWebsite": "https://gitlab.com/",
+  "authentication": {
+    "type": "api_key_header",
+    "requiredCredentialFields": [
+      "api_key"
+    ],
+    "requiredHeaderNames": [],
+    "helpUrl": "https://docs.gitlab.com/user/profile/personal_access_tokens/",
+    "tenantRequired": false,
+    "accountParameterNames": []
+  },
+  "attributionSlug": "github-gitlab-mcp",
+  "factory": "leadadapter-pipmcp",
+  "generatorVersion": 1
+}
