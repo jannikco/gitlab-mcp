@@ -5,20 +5,22 @@
   "releaseEligible": true,
   "maintainer": "jannikco",
   "license": "MIT",
-  "sourceRevision": "5fc52efaac2375b2cb335583340344310ff856b79b2c0b2f9c0e98bf86f4c9e6",
+  "sourceRevision": "d36f4a473b1867d23ca9050ee0853c2317c7c0a5d8cb5525d70de69f45fd5362",
   "evidence": [
-    "Source-backed provider setup metadata",
-    "Offline configuration and MCP protocol tests"
+    "Actual tools/call and direct-provider request contract tests"
   ],
   "provenance": [
-    "https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/api/openapi/openapi_v2.yaml"
+    "https://docs.gitlab.com/api/issues/"
   ],
   "id": "gitlab-mcp",
-  "kind": "mcp-setup",
+  "kind": "provider-connector",
   "product": "pipmcp",
-  "title": "GitLab MCP setup and connection checker",
-  "description": "Generate GitLab MCP client configuration, inspect available tools and validate hosted endpoint access through PipMCP.",
-  "operationIds": [],
+  "title": "GitLab MCP server",
+  "description": "Confirm the token owner and collect a project’s open issues for a sprint handover.",
+  "operationIds": [
+    "get_current_user",
+    "list_project_issues"
+  ],
   "appSlug": "gitlab",
   "appName": "GitLab",
   "providerDocs": "https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/api/openapi/openapi_v2.yaml",
@@ -28,10 +30,241 @@
     "requiredCredentialFields": [
       "api_key"
     ],
+    "settings": {},
     "requiredHeaderNames": [],
     "helpUrl": "https://docs.gitlab.com/user/profile/personal_access_tokens/",
     "tenantRequired": false,
     "accountParameterNames": []
   },
-  "attributionSlug": "github-gitlab-mcp"
+  "attributionSlug": "github-gitlab-mcp",
+  "artifactType": "connector",
+  "qualityVersion": 2,
+  "connectorId": "gitlab",
+  "connector": {
+    "id": "gitlab",
+    "name": "GitLab",
+    "version": "0.2.0",
+    "baseUrl": "https://gitlab.com/api/v4",
+    "auth": {
+      "type": "header",
+      "env": "GITLAB_TOKEN",
+      "header": "PRIVATE-TOKEN"
+    },
+    "tools": [
+      {
+        "name": "get_current_user",
+        "description": "Read the current GitLab user.",
+        "method": "GET",
+        "path": "/user",
+        "readOnly": true,
+        "inputSchema": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "bindings": {
+          "path": [],
+          "query": {},
+          "body": {}
+        },
+        "sampleArguments": {},
+        "provenance": [
+          "https://docs.gitlab.com/api/users/"
+        ]
+      },
+      {
+        "name": "list_project_issues",
+        "description": "Read issues from one authorized project. Project paths are URL-encoded as one segment.",
+        "method": "GET",
+        "path": "/projects/{project_id}/issues",
+        "readOnly": true,
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "project_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "description": "Identifier"
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "opened",
+                "closed",
+                "all"
+              ]
+            },
+            "per_page": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "page": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000
+            }
+          },
+          "required": [
+            "project_id"
+          ],
+          "additionalProperties": false
+        },
+        "bindings": {
+          "path": [
+            "project_id"
+          ],
+          "query": {
+            "state": "state",
+            "per_page": "per_page",
+            "page": "page"
+          },
+          "body": {}
+        },
+        "sampleArguments": {
+          "project_id": "group/project",
+          "per_page": 10
+        },
+        "provenance": [
+          "https://docs.gitlab.com/api/issues/"
+        ],
+        "pagination": {
+          "type": "header",
+          "cursorInput": "page",
+          "headerName": "x-next-page"
+        }
+      }
+    ],
+    "workflow": {
+      "name": "GitLab sprint triage",
+      "description": "Confirm the token owner and collect a project’s open issues for a sprint handover.",
+      "steps": [
+        "get_current_user",
+        "list_project_issues"
+      ]
+    },
+    "provenance": [
+      "https://docs.gitlab.com/api/issues/"
+    ],
+    "verification": "mock-only",
+    "providerLiveValidation": "not-run",
+    "capabilityEvidence": {
+      "local": {
+        "level": "Tested",
+        "operations": [
+          {
+            "name": "get_current_user",
+            "level": "Tested",
+            "evidenceRefs": [
+              "Provider request/stdio contract tests"
+            ],
+            "method": "contract-fixture"
+          },
+          {
+            "name": "list_project_issues",
+            "level": "Tested",
+            "evidenceRefs": [
+              "Provider request/stdio contract tests"
+            ],
+            "method": "contract-fixture"
+          }
+        ],
+        "evidenceRefs": [
+          "Provider request/stdio contract tests"
+        ],
+        "mode": "local"
+      },
+      "managed": {
+        "level": "Documented",
+        "operations": [
+          {
+            "name": "get_current_user",
+            "level": "Documented",
+            "evidenceRefs": [],
+            "method": "documentation"
+          },
+          {
+            "name": "list_project_issues",
+            "level": "Documented",
+            "evidenceRefs": [],
+            "method": "documentation"
+          }
+        ],
+        "evidenceRefs": [],
+        "mode": "managed"
+      }
+    },
+    "repoId": "gitlab-mcp",
+    "appSlug": "gitlab",
+    "product": "pipmcp",
+    "artifactType": "connector",
+    "sourceRevision": "d36f4a473b1867d23ca9050ee0853c2317c7c0a5d8cb5525d70de69f45fd5362",
+    "authentication": {
+      "type": "api_key_header",
+      "requiredCredentialFields": [
+        "api_key"
+      ],
+      "settings": {},
+      "requiredHeaderNames": [],
+      "helpUrl": "https://docs.gitlab.com/user/profile/personal_access_tokens/",
+      "tenantRequired": false,
+      "accountParameterNames": []
+    },
+    "managedAvailability": {
+      "status": "listed",
+      "checkedAt": "2026-11-08T12:29:10.433747+00:00"
+    }
+  },
+  "capabilityEvidence": {
+    "local": {
+      "level": "Tested",
+      "operations": [
+        {
+          "name": "get_current_user",
+          "level": "Tested",
+          "evidenceRefs": [
+            "Provider request/stdio contract tests"
+          ],
+          "method": "contract-fixture"
+        },
+        {
+          "name": "list_project_issues",
+          "level": "Tested",
+          "evidenceRefs": [
+            "Provider request/stdio contract tests"
+          ],
+          "method": "contract-fixture"
+        }
+      ],
+      "evidenceRefs": [
+        "Provider request/stdio contract tests"
+      ],
+      "mode": "local"
+    },
+    "managed": {
+      "level": "Documented",
+      "operations": [
+        {
+          "name": "get_current_user",
+          "level": "Documented",
+          "evidenceRefs": [],
+          "method": "documentation"
+        },
+        {
+          "name": "list_project_issues",
+          "level": "Documented",
+          "evidenceRefs": [],
+          "method": "documentation"
+        }
+      ],
+      "evidenceRefs": [],
+      "mode": "managed"
+    }
+  },
+  "utility": {
+    "problem": "Confirm the token owner and collect a project’s open issues for a sprint handover.",
+    "output": "Actual provider API results through local MCP tools"
+  }
 }
